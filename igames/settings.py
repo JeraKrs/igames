@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import pymysql.cursors
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -113,11 +114,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "/igames/static/")
 
-
+mysql_dbs = {}
+mysql_dbs['game'] = pymysql.connect(
+		host='10.0.0.5', port=3306, user='root', password='Keshuai123', db='igame',
+		charset='utf8', cursorclass=pymysql.cursors.DictCursor)
