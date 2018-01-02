@@ -1,1 +1,1 @@
-uwsgi --socket :8001 --ini igames_uwsgi.ini
+uwsgi --socket :8001 --ini uwsgi.ini
