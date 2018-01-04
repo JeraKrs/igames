@@ -8,6 +8,14 @@ import pymysql.cursors
 
 PAGE_NUM = 20
 
+def transform(item):
+	temp = item.get('save_time', datetime.datetime.now())
+	item['save_time'] = time.mktime(temp.timetuple())
+	item['disadvantages'] = item.get('disadvantages', 'Unknown').split(', ')
+	item['advantages'] = item.get('advantages', 'Unknown').split(', ')
+	item['category'] = item.get('category', 'Unknown').split(', ')
+	return item
+
 
 def info(request):
 	gid = request.GET.get('gid', 1)
@@ -34,10 +42,8 @@ def info(request):
 		response['game'] = {}
 		response['status'] = 1
 	else:
-		temp = result.get('save_time', datetime.datetime.now())
-		result['save_time'] = time.mktime(temp.timetuple())
 
-		response['game'] = result
+		response['game'] = transform(result)
 		response['status'] = 0
 
 	res = HttpResponse(json.dumps(response), content_type="application/json")
@@ -69,8 +75,7 @@ def search(request):
 		connection.close()
 
 	for item in result:
-		temp = item.get('save_time', datetime.datetime.now())
-		item['save_time'] = time.mktime(temp.timetuple())
+		item = transform(item)
 
 	response = {
 			'status': 0,
@@ -107,8 +112,7 @@ def rank(request):
 		connection.close()
 
 	for item in result:
-		temp = item.get('save_time', datetime.datetime.now())
-		item['save_time'] = time.mktime(temp.timetuple())
+		item = transform(item)
 
 	response = {
 			'status': 0,
