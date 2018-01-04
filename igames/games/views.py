@@ -19,7 +19,7 @@ def info(request):
 
 	try:
 		with connection.cursor() as cursor:
-			sql = """SELECT * FROM game_save where `id`=%s"""
+			sql = """SELECT * FROM game_save_test where `id`=%s"""
 			cursor.execute(sql, (gid, ))
 		
 			result = cursor.fetchone()
@@ -53,7 +53,7 @@ def search(request):
 
 	try:
 		with connection.cursor() as cursor:
-			sql = """SELECT * FROM game_save where id>%s and name like %s ORDER BY id ASC LIMIT %s"""
+			sql = """SELECT * FROM game_save_test where id>%s and name like %s ORDER BY id ASC LIMIT %s"""
 			cursor.execute(sql, (last_id, '%' + key + '%', PAGE_NUM))
 		
 			result = cursor.fetchall()
@@ -85,7 +85,7 @@ def rank(request):
 
 	try:
 		with connection.cursor() as cursor:
-			sql = """SELECT * FROM game_save where id>%s and id<=%s ORDER BY id ASC"""
+			sql = """SELECT * FROM game_save_test where id>%s and id<=%s ORDER BY id ASC"""
 			cursor.execute(sql, (begin, end))
 		
 			result = cursor.fetchall()
