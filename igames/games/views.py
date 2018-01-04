@@ -3,20 +3,32 @@ import datetime
 import json
 import time
 
-from igames.settings import mysql_dbs
+import pymysql.cursors
+
 
 PAGE_NUM = 5 
+
 
 def info(request):
 	gid = request.GET.get('gid', 1)
 	response = {}
 
-	connection = mysql_dbs['game']
-	with connection.cursor() as cursor:
-		sql = """SELECT * FROM game_save where `id`=%s"""
-		cursor.execute(sql, (gid, ))
+	connection = pymysql.connect(
+			host='10.0.0.5', port=3306, user='root', password='Keshuai123', db='igame',
+			charset='utf8', cursorclass=pymysql.cursors.DictCursor)
+
+	try:
+		with connection.cursor() as cursor:
+			sql = """SELECT * FROM game_save where `id`=%s"""
+			cursor.execute(sql, (gid, ))
 		
-		result = cursor.fetchone()
+			result = cursor.fetchone()
+	except Exception as e:
+		result = None
+	finally:
+		connection.close()
+
+	print result
 	
 	if result is None:
 		response['game'] = {}
@@ -35,12 +47,20 @@ def search(request):
 	key = request.GET.get('key', '')
 	last_id = int(request.GET.get('last_id', '0'))
 
-	connection = mysql_dbs['game']
-	with connection.cursor() as cursor:
-		sql = """SELECT * FROM game_save where id>%s and name like %s ORDER BY id ASC LIMIT %s"""
-		cursor.execute(sql, (last_id, '%' + key + '%', PAGE_NUM))
+	connection = pymysql.connect(
+			host='10.0.0.5', port=3306, user='root', password='Keshuai123', db='igame',
+			charset='utf8', cursorclass=pymysql.cursors.DictCursor)
+
+	try:
+		with connection.cursor() as cursor:
+			sql = """SELECT * FROM game_save where id>%s and name like %s ORDER BY id ASC LIMIT %s"""
+			cursor.execute(sql, (last_id, '%' + key + '%', PAGE_NUM))
 		
-		result = cursor.fetchall()
+			result = cursor.fetchall()
+	except Exception as e:
+		result = []
+	finally:
+		connection.close()
 
 	for item in result:
 		temp = item.get('save_time', datetime.datetime.now())
@@ -59,12 +79,20 @@ def rank(request):
 	begin = page * PAGE_NUM
 	end = begin + PAGE_NUM
 
-	connection = mysql_dbs['game']
-	with connection.cursor() as cursor:
-		sql = """SELECT * FROM game_save where id>%s and id<=%s ORDER BY id ASC"""
-		cursor.execute(sql, (begin, end))
+	connection = pymysql.connect(
+			host='10.0.0.5', port=3306, user='root', password='Keshuai123', db='igame',
+			charset='utf8', cursorclass=pymysql.cursors.DictCursor)
+
+	try:
+		with connection.cursor() as cursor:
+			sql = """SELECT * FROM game_save where id>%s and id<=%s ORDER BY id ASC"""
+			cursor.execute(sql, (begin, end))
 		
-		result = cursor.fetchall()
+			result = cursor.fetchall()
+	except Exception as e:
+		result = []
+	finally:
+		connection.close()
 
 	for item in result:
 		temp = item.get('save_time', datetime.datetime.now())
@@ -75,3 +103,5 @@ def rank(request):
 			'games': result}
 
 	return HttpResponse(json.dumps(response), content_type="application/json")
+
+
