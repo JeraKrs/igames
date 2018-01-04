@@ -6,7 +6,7 @@ import time
 import pymysql.cursors
 
 
-PAGE_NUM = 5 
+PAGE_NUM = 20
 
 
 def info(request):
@@ -40,7 +40,13 @@ def info(request):
 		response['game'] = result
 		response['status'] = 0
 
-	return HttpResponse(json.dumps(response), content_type="application/json")
+	res = HttpResponse(json.dumps(response), content_type="application/json")
+
+	res["Access-Control-Allow-Origin"] = "*"
+	res["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+	res["Access-Control-Max-Age"] = "1000"
+	res["Access-Control-Allow-Headers"] = "*"
+	return res
 
 
 def search(request):
@@ -70,7 +76,13 @@ def search(request):
 			'status': 0,
 			'games': result}
 
-	return HttpResponse(json.dumps(response), content_type="application/json")
+	res = HttpResponse(json.dumps(response), content_type="application/json")
+
+	res["Access-Control-Allow-Origin"] = "*"
+	res["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+	res["Access-Control-Max-Age"] = "1000"
+	res["Access-Control-Allow-Headers"] = "*"
+	return res
 
 
 def rank(request):
@@ -102,6 +114,10 @@ def rank(request):
 			'status': 0,
 			'games': result}
 
-	return HttpResponse(json.dumps(response), content_type="application/json")
+	res = HttpResponse(json.dumps(response), content_type="application/json")
 
-
+	res["Access-Control-Allow-Origin"] = "*"
+	res["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+	res["Access-Control-Max-Age"] = "1000"
+	res["Access-Control-Allow-Headers"] = "*"
+	return res
